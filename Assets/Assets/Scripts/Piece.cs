@@ -13,8 +13,11 @@ public class Piece : MonoBehaviour
 	public float lockDelay = 0.5f;
 
 	private float stepTime;
-	private float moveTime;
+	public float moveTime;
 	private float lockTime;
+
+	public SoundManager soundManager;
+	
 
 	public void Initialize(Board board, Vector3Int position, TetrominoData data)
 	{
@@ -45,25 +48,34 @@ public class Piece : MonoBehaviour
 		lockTime += Time.deltaTime;
 
 		// Handle rotation
-		if (Input.GetKeyDown(KeyCode.Q)) {
+		if (Input.GetKeyDown(KeyCode.Q)) 
+		{
 			Rotate(-1);
-		} else if (Input.GetKeyDown(KeyCode.E)) {
+			soundManager.RotationSound();
+		} 
+		else if (Input.GetKeyDown(KeyCode.E)) 
+		{
 			Rotate(1);
+			soundManager.RotationSound();
 		}
 
 		// Handle hard drop
-		if (Input.GetKeyDown(KeyCode.Space)) {
+		if (Input.GetKeyDown(KeyCode.Space)) 
+		{
 			HardDrop();
+			soundManager.DropSound();
 		}
 
 		// Allow the player to hold movement keys but only after a move delay
 		// so it does not move too fast
-		if (Time.time > moveTime) {
+		if (Time.time > moveTime) 
+		{
 			HandleMoveInputs();
 		}
 
 		// Advance the piece to the next row every x seconds
-		if (Time.time > stepTime) {
+		if (Time.time > stepTime) 
+		{
 			Step();
 		}
 
@@ -73,18 +85,22 @@ public class Piece : MonoBehaviour
 	private void HandleMoveInputs()
 	{
 		// Soft drop movement
-		if (Input.GetKey(KeyCode.S))
+		if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
 		{
-			if (Move(Vector2Int.down)) {
+			if (Move(Vector2Int.down)) 
+			{
 				// Update the step time to prevent double movement
 				stepTime = Time.time + stepDelay;
 			}
 		}
 
 		// Left/right movement
-		if (Input.GetKey(KeyCode.A)) {
+		if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow)) 
+		{
 			Move(Vector2Int.left);
-		} else if (Input.GetKey(KeyCode.D)) {
+		} 
+		else if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow)) 
+		{
 			Move(Vector2Int.right);
 		}
 	}
@@ -97,7 +113,8 @@ public class Piece : MonoBehaviour
 		Move(Vector2Int.down);
 
 		// Once the piece has been inactive for too long it becomes locked
-		if (lockTime >= lockDelay) {
+		if (lockTime >= lockDelay) 
+		{
 			Lock();
 		}
 	}

@@ -1,5 +1,7 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEngine.SceneManagement;
 
 public class Board : MonoBehaviour
 {
@@ -9,6 +11,11 @@ public class Board : MonoBehaviour
 	public TetrominoData[] tetrominoes;
 	public Vector2Int boardSize = new Vector2Int(10, 20);
 	public Vector3Int spawnPosition = new Vector3Int(-1, 8, 0);
+	
+	
+	public SoundManager soundManager;
+	private ScoreManager scoreManager;
+	public SceneController sceneController;
 
 	public RectInt Bounds {
 		get
@@ -22,15 +29,19 @@ public class Board : MonoBehaviour
 	{
 		tilemap = GetComponentInChildren<Tilemap>();
 		activePiece = GetComponentInChildren<Piece>();
-
+		scoreManager = GetComponent<ScoreManager>();
+		
 		for (int i = 0; i < tetrominoes.Length; i++) {
 			tetrominoes[i].Initialize();
 		}
+
 	}
 
 	private void Start()
 	{
 		SpawnPiece();
+		
+		
 	}
 
 	public void SpawnPiece()
@@ -43,15 +54,19 @@ public class Board : MonoBehaviour
 		if (IsValidPosition(activePiece, spawnPosition)) {
 			Set(activePiece);
 		} else {
+			
 			GameOver();
 		}
 	}
 
-	public void GameOver()
+	void GameOver()
 	{
-		tilemap.ClearAllTiles();
 
-		// Do anything else you want on game over here..
+		tilemap.ClearAllTiles();
+		sceneController.LoadScene("Game Over");		
+		scoreManager.OnGameOver();
+		
+		
 	}
 
 	public void Set(Piece piece)
@@ -155,6 +170,7 @@ public class Board : MonoBehaviour
 
 			row++;
 		}
+		scoreManager.UpdateScore();
 	}
 
 }
