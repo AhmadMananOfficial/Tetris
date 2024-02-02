@@ -21,7 +21,7 @@ public class SettingManager : MonoBehaviour
 
 		// Load saved settings
 		int qualityIndex = PlayerPrefs.GetInt(qualityPrefKey, 3);
-		float volume = PlayerPrefs.GetFloat(volumePrefKey, 0.5f);
+		float volume = PlayerPrefs.GetFloat(volumePrefKey, 0.3f);
 		
 		qualityDropdown.value = qualityIndex;
 		
